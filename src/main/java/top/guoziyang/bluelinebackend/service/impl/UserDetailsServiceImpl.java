@@ -1,4 +1,4 @@
-package top.guoziyang.bluelinebackend.service;
+package top.guoziyang.bluelinebackend.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +9,7 @@ import top.guoziyang.bluelinebackend.repository.UserRepository;
 import top.guoziyang.bluelinebackend.entity.User;
 import top.guoziyang.bluelinebackend.model.JwtUser;
 
-@Service
+@Service("userDetailsServiceImpl")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired

@@ -1,6 +1,7 @@
 package top.guoziyang.bluelinebackend.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -17,12 +18,9 @@ public class JwtUtils {
 
     private static final String ROLE_CLAIMS = "rol";
 
-    private static final long EXPIRATION = 1800L;
+    public static final long EXPIRATION = 60L;
 
-    private static final long EXPIRATION_REMEMBER = 604800L;
-
-    public static String createToken(String username, String role, boolean isRememberMe) {
-        long expiration = isRememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
+    public static String createToken(String username, String role) {
         HashMap<String, Object> map = new HashMap<>();
         map.put(ROLE_CLAIMS, role);
         return Jwts.builder()
@@ -31,7 +29,7 @@ public class JwtUtils {
                 .setIssuer(ISS)
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION * 1000))
                 .compact();
     }
 
@@ -48,9 +46,13 @@ public class JwtUtils {
     }
 
     private static Claims getTokenBody(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET)
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts.parser()
+                    .setSigningKey(SECRET)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 }

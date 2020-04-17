@@ -50,5 +50,17 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: true
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password:
+    jedis:
+      pool:
+        max-active: 200
+        max-wait: -1
+        max-idle: 10
+        min-idle: 0
+    timeout: 1000
 server:
   port: 8080

@@ -13,13 +13,12 @@ import java.io.IOException;
 
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
-
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        String reason = "统一处理，原因:" + e.getMessage();
+        String reason = "无权访问资源！";
         Result result = ResultUtils.genFailResult(reason);
         result.setCode(ResultCode.UNAUTHORIZED);
         response.getWriter().write(result.toString());
