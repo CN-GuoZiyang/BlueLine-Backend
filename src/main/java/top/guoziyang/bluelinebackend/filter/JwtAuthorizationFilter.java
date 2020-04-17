@@ -7,7 +7,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import top.guoziyang.bluelinebackend.exception.TokenIsExpiredException;
+import top.guoziyang.bluelinebackend.model.Result;
+import top.guoziyang.bluelinebackend.model.ResultCode;
 import top.guoziyang.bluelinebackend.utils.JwtUtils;
+import top.guoziyang.bluelinebackend.utils.ResultUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -34,9 +37,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         } catch (TokenIsExpiredException e) {
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            String reason = "统一处理，原因：" + e.getMessage();
-            response.getWriter().write(new ObjectMapper().writeValueAsString(reason));
+            response.setStatus(HttpServletResponse.SC_OK);
+            Result result = ResultUtils.genFailResult("Token过期，请重新登陆");
+            result.setCode(ResultCode.UNAUTHORIZED);
+            response.getWriter().write(result.toString());
             response.getWriter().flush();
             return;
         }

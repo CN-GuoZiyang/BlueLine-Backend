@@ -9,7 +9,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import top.guoziyang.bluelinebackend.model.JwtUser;
 import top.guoziyang.bluelinebackend.model.LoginUser;
+import top.guoziyang.bluelinebackend.model.Result;
+import top.guoziyang.bluelinebackend.model.ResultCode;
 import top.guoziyang.bluelinebackend.utils.JwtUtils;
+import top.guoziyang.bluelinebackend.utils.ResultUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -54,12 +57,22 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         for(GrantedAuthority authority : authorities) {
             role = authority.getAuthority();
         }
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json; charset=utf-8");
+        response.setStatus(HttpServletResponse.SC_OK);
         String token = JwtUtils.createToken(jwtUser.getUsername(), role, isRemember);
         response.setHeader("token", JwtUtils.TOKEN_PREFIX + token);
+        Result result = ResultUtils.genSuccessResult();
+        response.getWriter().write(result.toString());
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        response.getWriter().write("authentication failed, reason: " + failed.getMessage());
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json; charset=utf-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+        Result result = ResultUtils.genFailResult("登陆失败！" + failed.getMessage());
+        result.setCode(ResultCode.FAIL);
+        response.getWriter().write(result.toString());
     }
 }

@@ -1,17 +1,19 @@
 package top.guoziyang.bluelinebackend.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import top.guoziyang.bluelinebackend.model.Result;
 import top.guoziyang.bluelinebackend.repository.UserRepository;
 import top.guoziyang.bluelinebackend.entity.User;
-
-import java.util.Map;
+import top.guoziyang.bluelinebackend.utils.ResultUtils;
 
 @RestController
+@Api(tags = "用户认证相关接口")
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -22,13 +24,18 @@ public class AuthController {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody Map<String, String> registerUser) {
+    @ApiOperation("用户注册")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username", value = "用户名", required = true),
+            @ApiImplicitParam(name = "password", value = "密码", required = true)
+    })
+    public Result registerUser(@RequestParam(required = true) String username, @RequestParam(required = true) String password) {
         User user = new User();
-        user.setUsername(registerUser.get("username"));
-        user.setPassword((bCryptPasswordEncoder.encode(registerUser.get("password"))));
+        user.setUsername(username);
+        user.setPassword((bCryptPasswordEncoder.encode(password)));
         user.setRole("ROLE_USER");
         User save = userRepository.save(user);
-        return save.toString();
+        return ResultUtils.genSuccessResult(save);
     }
 
 }

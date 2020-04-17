@@ -1,10 +1,8 @@
 package top.guoziyang.bluelinebackend.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class LoginUser {
 
     private String username;
