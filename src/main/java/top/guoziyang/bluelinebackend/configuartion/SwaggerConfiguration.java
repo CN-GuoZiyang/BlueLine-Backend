@@ -9,6 +9,11 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+/**
+ * Swagger2配置类
+ *
+ * @author ziyang
+ */
 @Configuration
 public class SwaggerConfiguration {
 
@@ -21,6 +26,7 @@ public class SwaggerConfiguration {
                 .paths(PathSelectors.any())
                 .build();
     }
+
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("BlueLine后端API文档")

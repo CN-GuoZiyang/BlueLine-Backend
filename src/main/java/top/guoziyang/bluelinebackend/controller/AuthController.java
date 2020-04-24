@@ -6,10 +6,13 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import top.guoziyang.bluelinebackend.entity.User;
 import top.guoziyang.bluelinebackend.model.Result;
 import top.guoziyang.bluelinebackend.repository.UserRepository;
-import top.guoziyang.bluelinebackend.entity.User;
 import top.guoziyang.bluelinebackend.utils.ResultUtils;
 
 @RestController

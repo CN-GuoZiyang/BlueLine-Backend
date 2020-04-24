@@ -20,6 +20,11 @@ import top.guoziyang.bluelinebackend.exception.JwtAuthenticationEntryPoint;
 import top.guoziyang.bluelinebackend.filter.JwtAuthenticationFilter;
 import top.guoziyang.bluelinebackend.filter.JwtAuthorizationFilter;
 
+/**
+ * Spring Security配置类
+ *
+ * @author ziyang
+ */
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -28,16 +33,33 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Qualifier("userDetailsServiceImpl")
     private UserDetailsService userDetailsService;
 
+    /**
+     * 创建一个新的BCrypt加密Bean
+     *
+     * @return BCrypt加密Bean
+     */
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * 指定认证时采用的service以及加密器
+     *
+     * @param auth 认证管理器Builder
+     * @throws Exception 加密错误和Service可能抛出的错误
+     */
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
     }
 
+    /**
+     * 配置具体的拦截规则和权限信息
+     *
+     * @param http HttpSecurity
+     * @throws Exception 可能的拦截器错误
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()

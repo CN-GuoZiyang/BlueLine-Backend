@@ -1,8 +1,14 @@
 package top.guoziyang.bluelinebackend.exception;
 
+/**
+ * Token过期异常，在Token不在Redis中及Redis中存储的Token与前端不同抛出此异常
+ *
+ * @author ziyang
+ */
 public class TokenIsExpiredException extends Exception {
 
-    public TokenIsExpiredException() {}
+    public TokenIsExpiredException() {
+    }
 
     public TokenIsExpiredException(String message) {
         super(message);

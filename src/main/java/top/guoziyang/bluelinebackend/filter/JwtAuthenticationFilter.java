@@ -1,8 +1,6 @@
 package top.guoziyang.bluelinebackend.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,16 +20,20 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.Console;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Spring Security认证过滤器
+ *
+ * @author ziyang
+ */
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    private RedisUtils redisUtils;
+    private final RedisUtils redisUtils;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -39,6 +41,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         super.setFilterProcessesUrl("/auth/login");
     }
 
+    /*
+        尝试认证
+     */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
@@ -52,7 +57,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
     }
 
-    // 验证成功后的操作
+    /*
+        认证成功后的操作，包括签发jwt token并将其存在redis中
+     */
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         JwtUser jwtUser = (JwtUser) authResult.getPrincipal();
@@ -60,13 +67,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String role = "";
         Collection<? extends GrantedAuthority> authorities = jwtUser.getAuthorities();
-        for(GrantedAuthority authority : authorities) {
+        for (GrantedAuthority authority : authorities) {
             role = authority.getAuthority();
         }
         // 签发Token
         String token = JwtUtils.createToken(jwtUser.getUsername(), role);
         // 将Token存储到Redis
-        redisUtils.set(jwtUser.getUsername(), token, JwtUtils.EXPIRATION*2);
+        redisUtils.set(jwtUser.getUsername(), token, JwtUtils.EXPIRATION * 2);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
@@ -75,6 +82,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.getWriter().write(result.toString());
     }
 
+    /*
+        认证失败时的逻辑
+     */
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         response.setCharacterEncoding("UTF-8");

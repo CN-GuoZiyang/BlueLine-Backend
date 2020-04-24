@@ -1,5 +1,10 @@
 package top.guoziyang.bluelinebackend.model;
 
+/**
+ * 通用返回结果中的状态码
+ *
+ * @author ziyang
+ */
 public enum ResultCode {
     SUCCESS(200),//成功
     FAIL(400),//失败

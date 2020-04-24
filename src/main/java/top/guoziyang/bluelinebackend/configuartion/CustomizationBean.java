@@ -6,6 +6,11 @@ import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFa
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.stereotype.Component;
 
+/**
+ * Undertow配置类，用于消除Undertow启动时的一个warning
+ *
+ * @author ziyang
+ */
 @Component
 public class CustomizationBean implements WebServerFactoryCustomizer<UndertowServletWebServerFactory> {
 

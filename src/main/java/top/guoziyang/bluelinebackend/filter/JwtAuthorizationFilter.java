@@ -20,9 +20,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 
+/**
+ * Spring Security权限检查过滤器
+ *
+ * @author ziyang
+ */
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private RedisUtils redisUtils;
+    private final RedisUtils redisUtils;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -32,13 +37,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String tokenHeader = request.getHeader(JwtUtils.TOKEN_HEADER);
-        if(tokenHeader == null || !tokenHeader.startsWith(JwtUtils.TOKEN_PREFIX)) {
+        if (tokenHeader == null || !tokenHeader.startsWith(JwtUtils.TOKEN_PREFIX)) {
             chain.doFilter(request, response);
             return;
         }
         try {
             TmpUsernamePasswordAuthenticationToken tmp = getAuthentication(tokenHeader);
-            if(tmp.refresh) {
+            if (tmp.refresh) {
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("application/json; charset=utf-8");
                 response.setHeader("token", JwtUtils.TOKEN_PREFIX + tmp.token);
@@ -57,16 +62,19 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         super.doFilterInternal(request, response, chain);
     }
 
+    /*
+        检查token是否合法与自动续期操作
+     */
     private TmpUsernamePasswordAuthenticationToken getAuthentication(String tokenHeader) throws TokenIsExpiredException {
         String token = tokenHeader.replace(JwtUtils.TOKEN_PREFIX, "");
         boolean expiration = JwtUtils.isExpiration(token);
         String username = JwtUtils.getUsername(token);
         String role = JwtUtils.getUserRole(token);
-        if(expiration) {
+        if (expiration) {
             // 检查是否在Redis中
-            if(!redisUtils.hasKey(username)) {
+            if (!redisUtils.hasKey(username)) {
                 throw new TokenIsExpiredException("Token过期，请重新登陆");
-            } else if(!redisUtils.get(username).equals(token)){
+            } else if (!redisUtils.get(username).equals(token)) {
                 redisUtils.del(username);
                 throw new TokenIsExpiredException("Token非法，请重新登陆");
             } else {
@@ -80,14 +88,15 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 return token1;
             }
         } else {
-            if(username != null) {
+            // token未过期
+            if (username != null) {
                 TmpUsernamePasswordAuthenticationToken token1 = new TmpUsernamePasswordAuthenticationToken();
                 token1.usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, null, Collections.singleton(new SimpleGrantedAuthority(role)));
                 token1.refresh = false;
                 return token1;
             }
+            throw new TokenIsExpiredException("Token非法，请重新登陆");
         }
-        return null;
     }
 
     static class TmpUsernamePasswordAuthenticationToken {

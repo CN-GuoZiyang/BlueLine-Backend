@@ -8,17 +8,19 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import java.util.HashMap;
 
+/**
+ * JWT工具类
+ *
+ * @author ziyang
+ */
 public class JwtUtils {
 
     public static final String TOKEN_HEADER = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer ";
-
+    public static final long EXPIRATION = 900L;
     private static final String SECRET = "bluelineisawesome";
     private static final String ISS = "ziyang";
-
     private static final String ROLE_CLAIMS = "rol";
-
-    public static final long EXPIRATION = 60L;
 
     public static String createToken(String username, String role) {
         HashMap<String, Object> map = new HashMap<>();

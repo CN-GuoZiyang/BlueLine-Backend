@@ -3,6 +3,11 @@ package top.guoziyang.bluelinebackend.utils;
 import top.guoziyang.bluelinebackend.model.Result;
 import top.guoziyang.bluelinebackend.model.ResultCode;
 
+/**
+ * 创建通用返回结果的工具类
+ *
+ * @author ziyang
+ */
 public class ResultUtils {
 
     private static final String DEFAULT_SUCCESS_MESSAGE = "SUCCESS";

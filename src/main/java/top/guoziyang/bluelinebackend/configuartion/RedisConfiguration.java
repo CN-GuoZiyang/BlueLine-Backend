@@ -6,6 +6,11 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+/**
+ * Redis配置类，key和value都采用String的序列化方式，防止双引号转义
+ *
+ * @author ziyang
+ */
 @Configuration
 public class RedisConfiguration {
 

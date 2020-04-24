@@ -15,7 +15,8 @@ public class JwtUser implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public JwtUser(){}
+    public JwtUser() {
+    }
 
     public JwtUser(User user) {
         id = user.getId();
