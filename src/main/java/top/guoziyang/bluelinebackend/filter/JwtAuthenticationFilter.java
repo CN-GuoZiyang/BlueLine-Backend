@@ -8,10 +8,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import top.guoziyang.bluelinebackend.configuartion.SpringContextHolder;
-import top.guoziyang.bluelinebackend.model.JwtUser;
-import top.guoziyang.bluelinebackend.model.LoginUser;
-import top.guoziyang.bluelinebackend.model.Result;
-import top.guoziyang.bluelinebackend.model.ResultCode;
+import top.guoziyang.bluelinebackend.model.*;
 import top.guoziyang.bluelinebackend.utils.JwtUtils;
 import top.guoziyang.bluelinebackend.utils.RedisUtils;
 import top.guoziyang.bluelinebackend.utils.ResultUtils;
@@ -31,9 +28,9 @@ import java.util.Collection;
  */
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
-    private final RedisUtils redisUtils;
+    private RedisUtils redisUtils;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -78,7 +75,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json; charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         response.setHeader("token", JwtUtils.TOKEN_PREFIX + token);
-        Result result = ResultUtils.genSuccessResult();
+        Result result = ResultUtils.genSuccessResult(new LoginData(role));
         response.getWriter().write(result.toString());
     }
 

@@ -27,7 +27,7 @@ import java.util.Collections;
  */
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private final RedisUtils redisUtils;
+    private RedisUtils redisUtils;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);

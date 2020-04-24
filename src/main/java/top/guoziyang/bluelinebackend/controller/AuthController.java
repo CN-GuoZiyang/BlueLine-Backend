@@ -32,7 +32,7 @@ public class AuthController {
             @ApiImplicitParam(name = "username", value = "用户名", required = true),
             @ApiImplicitParam(name = "password", value = "密码", required = true)
     })
-    public Result registerUser(@RequestParam(required = true) String username, @RequestParam(required = true) String password) {
+    public Result registerUser(@RequestParam String username, @RequestParam String password) {
         User user = new User();
         user.setUsername(username);
         user.setPassword((bCryptPasswordEncoder.encode(password)));
