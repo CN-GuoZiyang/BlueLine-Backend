@@ -14,6 +14,7 @@ public class JwtUser implements UserDetails {
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
+    private boolean enable;
 
     public JwtUser() {
     }
@@ -23,11 +24,16 @@ public class JwtUser implements UserDetails {
         username = user.getUsername();
         password = user.getPassword();
         authorities = Collections.singleton(new SimpleGrantedAuthority(user.getRole()));
+        enable = user.getEnable()==1;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     @Override
@@ -57,7 +63,7 @@ public class JwtUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enable;
     }
 
     @Override
@@ -66,7 +72,8 @@ public class JwtUser implements UserDetails {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", authorities=" + authorities +
+                ", authorities=" + authorities + + '\'' +
+                ", enable=" + enable +
                 '}';
     }
 }

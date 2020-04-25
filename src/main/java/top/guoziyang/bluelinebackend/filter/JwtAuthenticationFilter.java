@@ -28,9 +28,9 @@ import java.util.Collection;
  */
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    private RedisUtils redisUtils;
+    private final RedisUtils redisUtils;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -61,7 +61,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         JwtUser jwtUser = (JwtUser) authResult.getPrincipal();
         System.out.println("jwtUser: " + jwtUser.toString());
-
         String role = "";
         Collection<? extends GrantedAuthority> authorities = jwtUser.getAuthorities();
         for (GrantedAuthority authority : authorities) {
@@ -75,7 +74,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json; charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         response.setHeader("token", JwtUtils.TOKEN_PREFIX + token);
-        Result result = ResultUtils.genSuccessResult(new LoginData(role));
+        Result result = ResultUtils.genSuccessResult(new LoginData(jwtUser.getId(), role));
         response.getWriter().write(result.toString());
     }
 

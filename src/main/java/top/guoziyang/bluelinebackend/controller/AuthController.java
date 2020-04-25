@@ -37,6 +37,7 @@ public class AuthController {
         user.setUsername(username);
         user.setPassword((bCryptPasswordEncoder.encode(password)));
         user.setRole("ROLE_USER");
+        user.setEnable(1);
         User save = userRepository.save(user);
         return ResultUtils.genSuccessResult(save);
     }

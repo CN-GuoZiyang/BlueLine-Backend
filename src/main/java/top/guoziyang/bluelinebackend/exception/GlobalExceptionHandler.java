@@ -41,6 +41,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             result.setMessage("数据绑定错误！");
         } else {
             result.setMessage("服务器错误！");
+            e.printStackTrace();
         }
         return result;
     }

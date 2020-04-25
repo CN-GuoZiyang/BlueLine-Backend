@@ -25,4 +25,7 @@ public class User {
     @Column(name = "role")
     private String role;
 
+    @Column(name = "enable")
+    private int enable;
+
 }

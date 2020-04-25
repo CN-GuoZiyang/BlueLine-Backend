@@ -62,3 +62,6 @@ spring:
     timeout: 1000
 server:
   port: 8080
+logging:
+  level:
+    root: INFO
