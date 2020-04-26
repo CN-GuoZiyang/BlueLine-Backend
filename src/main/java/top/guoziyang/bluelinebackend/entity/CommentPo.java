@@ -3,30 +3,19 @@ package top.guoziyang.bluelinebackend.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.sql.Timestamp;
 
 @Data
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Article {
+public class CommentPo {
 
     private Integer id;
-
-    private String title;
-
-    private Integer author;
-
+    private Integer parentComment;
+    private Integer authorId;
     private Timestamp time;
-
-    private String titleImg;
-
-    private String summary;
-
     private String content;
-
-    private Boolean enable;
+    private String authorName;
 
 }

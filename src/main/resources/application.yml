@@ -41,13 +41,6 @@ spring:
         url-pattern: /*
         # 忽略过滤格式
         exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
-
-  jpa:
-    database: mysql
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-    open-in-view: true
   redis:
     database: 0
     host: localhost
@@ -65,3 +58,12 @@ server:
 logging:
   level:
     root: INFO
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  params: count=countSql
+  support-methods-arguments: true
+  page-size-zero: true
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true

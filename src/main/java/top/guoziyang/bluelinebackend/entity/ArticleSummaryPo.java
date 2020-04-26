@@ -3,30 +3,17 @@ package top.guoziyang.bluelinebackend.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-import java.sql.Timestamp;
 
 @Data
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Article {
+public class ArticleSummaryPo {
 
     private Integer id;
-
     private String title;
-
-    private Integer author;
-
-    private Timestamp time;
-
+    private Integer authorId;
+    private String authorName;
     private String titleImg;
-
     private String summary;
-
-    private String content;
-
-    private Boolean enable;
 
 }

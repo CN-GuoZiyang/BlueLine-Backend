@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.guoziyang.bluelinebackend.entity.User;
+import top.guoziyang.bluelinebackend.mapper.UserMapper;
 import top.guoziyang.bluelinebackend.model.Result;
-import top.guoziyang.bluelinebackend.repository.UserRepository;
+import top.guoziyang.bluelinebackend.model.ResultCode;
 import top.guoziyang.bluelinebackend.utils.ResultUtils;
 
 @RestController
@@ -21,7 +22,7 @@ import top.guoziyang.bluelinebackend.utils.ResultUtils;
 public class AuthController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserMapper userMapper;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -38,8 +39,14 @@ public class AuthController {
         user.setPassword((bCryptPasswordEncoder.encode(password)));
         user.setRole("ROLE_USER");
         user.setEnable(1);
-        User save = userRepository.save(user);
-        return ResultUtils.genSuccessResult(save);
+        int res = userMapper.insertUser(user);
+        if(res == 1) {
+            return ResultUtils.genSuccessResult();
+        } else {
+            Result result = ResultUtils.genFailResult("注册失败！");
+            result.setCode(ResultCode.FAIL);
+            return result;
+        }
     }
 
 }

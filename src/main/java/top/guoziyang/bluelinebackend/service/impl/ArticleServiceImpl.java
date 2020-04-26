@@ -1,16 +1,13 @@
 package top.guoziyang.bluelinebackend.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.guoziyang.bluelinebackend.entity.Article;
-import top.guoziyang.bluelinebackend.entity.Comment;
-import top.guoziyang.bluelinebackend.entity.User;
-import top.guoziyang.bluelinebackend.model.ArticleDto;
-import top.guoziyang.bluelinebackend.model.CommentDto;
-import top.guoziyang.bluelinebackend.model.PreviousAndNextArticleDto;
-import top.guoziyang.bluelinebackend.repository.ArticleRepository;
-import top.guoziyang.bluelinebackend.repository.CommentRepository;
-import top.guoziyang.bluelinebackend.repository.UserRepository;
+import top.guoziyang.bluelinebackend.entity.*;
+import top.guoziyang.bluelinebackend.mapper.ArticleMapper;
+import top.guoziyang.bluelinebackend.mapper.CommentMapper;
+import top.guoziyang.bluelinebackend.model.*;
 import top.guoziyang.bluelinebackend.service.ArticleService;
 
 import java.util.*;
@@ -19,42 +16,28 @@ import java.util.*;
 public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
-    private ArticleRepository articleRepository;
+    private ArticleMapper articleMapper;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private CommentRepository commentRepository;
+    private CommentMapper commentMapper;
 
     @Override
-    public ArticleDto getArticleDto(int articleId) {
-        Article article = articleRepository.getArticleById(articleId);
-        if(article == null) return null;
-        User author = userRepository.findUserById(article.getAuthor());
-        return ArticleDto.builder()
-                .id(article.getId())
-                .title(article.getTitle())
-                .authorId(article.getAuthor())
-                .authorName(author.getUsername())
-                .time(article.getTime())
-                .titleImg(article.getTitleImg())
-                .content(article.getContent())
-                .build();
+    public ArticlePo getArticleDto(int articleId) {
+        return articleMapper.getArticleById(articleId);
     }
 
     @Override
     public List<CommentDto> getCommentTree(int articleId) {
-        List<Comment> commentList = commentRepository.getCommentsByParentArticle(articleId);
+        List<CommentPo> commentList = commentMapper.getCommentsByParentArticle(articleId);
         List<CommentDto> commentTree = new ArrayList<>();
         Map<Integer, CommentDto> id2CommentDto = new HashMap<>();
         Set<Integer> done = new HashSet<>();
-        for(Comment c : commentList) {
+        for(CommentPo c : commentList) {
             CommentDto commentDto = CommentDto.builder()
                     .id(c.getId())
                     .parentComment(c.getParentComment())
-                    .authorId(c.getAuthor())
-                    .authorName(userRepository.findUserById(c.getAuthor()).getUsername())
+                    .authorId(c.getAuthorId())
+                    .authorName(c.getAuthorName())
                     .time(c.getTime())
                     .content(c.getContent())
                     .childrenComments(new ArrayList<>())
@@ -74,13 +57,20 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public PreviousAndNextArticleDto getPreviousArticle(int articleId) {
-        return articleRepository.getPreviousArticle(articleId);
+    public PreviousAndNextArticlePo getPreviousArticle(int articleId) {
+        return articleMapper.getPreviousArticle(articleId);
     }
 
     @Override
-    public PreviousAndNextArticleDto getNextArticle(int articleId) {
-        return articleRepository.getNextArticle(articleId);
+    public PreviousAndNextArticlePo getNextArticle(int articleId) {
+        return articleMapper.getNextArticle(articleId);
+    }
+
+    @Override
+    public Page<ArticleSummaryPo> getArticleList(int page, int size) {
+        Page<ArticleSummaryPo> pageInfo = PageHelper.startPage(page, size);
+        articleMapper.getSummaryByPage();
+        return pageInfo;
     }
 
 }
